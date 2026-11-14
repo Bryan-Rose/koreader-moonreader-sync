@@ -1,0 +1,15 @@
+services:
+  reader-sync:
+    build: .
+    container_name: reader-sync
+    restart: unless-stopped
+    user: "${PUID:-1000}:${PGID:-1000}"  # owner of the WebDAV files, so Moon+ can still overwrite what we write
+    environment:
+      SYNC_USER: ${SYNC_USER}
+      SYNC_PASSWORD: ${SYNC_PASSWORD}
+    volumes:
+      - ${BOOKS_DIR}:/books:ro
+      - ${MOON_CACHE_DIR}:/moon  # the .Moon+/Cache folder of your WebDAV share
+      - ./data:/data
+    ports:
+      - "8081:8081"
